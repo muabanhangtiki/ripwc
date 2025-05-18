@@ -8,7 +8,7 @@ use rayon::prelude::*;
 use walkdir::WalkDir;
 
 #[derive(Parser)]
-#[clap(author="LuminousToaster", version=env!("CARGO_PKG_VERSION"), about="A rewrite of the GNU coreutils 'wc' tool.", long_about = None)]
+#[clap(author="https://github.com/LuminousToaster", version=env!("CARGO_PKG_VERSION"), about="A rewrite of the GNU coreutils 'wc' tool.", long_about = None)]
 struct Args {
 	#[clap(value_parser, help="The file or folder to read", required=true)]
 	file: Vec<String>,
@@ -61,7 +61,7 @@ static IS_WHITESPACE: [bool; 256] = {
 fn main() -> io::Result<()> {
 	rayon::ThreadPoolBuilder::new().num_threads(num_cpus::get()).build_global().unwrap();
 	let mut app = Args::parse();
-	// Set default flags if none are specified (same as 'wc')
+	// Set default flags if none are specified
 	if !app.bytes && !app.lines && !app.words && !app.chars && !app.max_line_length {
 		app.bytes = true;
 		app.lines = true;
