@@ -1,6 +1,6 @@
 # ripwc
 
-`ripwc` is a high-performance rewrite of the GNU `wc` (word count) utility, implemented in Rust for speed and efficiency. It counts lines, words, characters, bytes, and maximum line lengths in files or directories, optimized for low-memory systems (e.g., 4GB RAM) while processing large datasets. Using unsafe Rust for pointer arithmetic, loop unrolling, and `rayon` for parallelism, `ripwc` achieves up to ~19.5x speedup (in my tests).
+`ripwc` is a high-performance rewrite of the GNU `wc` (word count) utility, implemented in Rust for speed and efficiency. It counts lines, words, characters, bytes, and maximum line lengths in files or directories, optimized for low-memory systems (e.g., 4GB RAM) while processing large datasets. Using unsafe Rust for pointer arithmetic, loop unrolling, and `rayon` for parallelism, `ripwc` achieves up to ~49x speedup (in my tests).
 
 ## Features
 - **Counts**: Lines (`-l`), words (`-w`), characters (`-m`), bytes (`-c`), and maximum line length (`-L`).
